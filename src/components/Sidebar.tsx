@@ -76,7 +76,7 @@ export default function Sidebar({ selected }: SidebarProps) {
         <SimpleTreeView
           aria-label="Navegación principal"
           defaultExpandedItems={['cumpleanos', 'herramientas']}
-          selectedItems={selected ?? null}
+          selectedItems={selected || undefined}
           onSelectedItemsChange={(_, itemIds) => {
             const id = Array.isArray(itemIds) ? itemIds[0] : itemIds
             if (id) handleItemClick(id)

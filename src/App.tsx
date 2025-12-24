@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar'
 import BirthdayList from './pages/birthday/BirthdayList.jsx'
 import BirthdayUser from './pages/birthday/BirthdayUser.jsx'
 import Exchange from './pages/exchange/Exchange.jsx'
+import Numbers from './pages/numbers/Numbers.jsx'
 
 const Home = () => (
   <section className="space-y-2">
@@ -22,6 +23,8 @@ function Layout() {
       navigate('/ingresar')
     } else if (nodeId === 'exchange') {
       navigate('/exchange')
+    } else if (nodeId === 'numbers') {
+      navigate('/numbers')
     } else {
       navigate('/')
     }
@@ -36,6 +39,7 @@ function Layout() {
           <Route path="/usuarios" element={<BirthdayList />} />
           <Route path="/ingresar" element={<BirthdayUser />} />
           <Route path="/exchange" element={<Exchange />} />
+          <Route path="/numbers" element={<Numbers />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

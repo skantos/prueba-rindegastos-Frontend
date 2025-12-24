@@ -5,12 +5,30 @@ import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
 import { TreeItem } from '@mui/x-tree-view/TreeItem'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import MenuIcon from '@mui/icons-material/Menu'
+import IconButton from '@mui/material/IconButton'
+import Drawer from '@mui/material/Drawer'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useState } from 'react'
 import logo from '../assets/logo.svg'
 
 function Sidebar({ onSelect }) {
-  return (
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen)
+  }
+
+  const handleItemClick = (itemId) => {
+    if (onSelect) onSelect(itemId)
+    if (isMobile) setDrawerOpen(false)
+  }
+
+  const sidebarContent = (
     <Box
-      component="aside"
       sx={{
         width: 260,
         minHeight: '100vh',
@@ -35,11 +53,10 @@ function Sidebar({ onSelect }) {
 
         <SimpleTreeView
           aria-label="Navegación principal"
-          defaultExpandedItems={['cumpleanos']}
-          selectionMode="single"
+          defaultExpandedItems={['cumpleanos', 'herramientas']}
           onSelectedItemsChange={(_, itemIds) => {
             const id = Array.isArray(itemIds) ? itemIds[0] : itemIds
-            if (id) onSelect?.(id)
+            if (id) handleItemClick(id)
           }}
           slots={{
             collapseIcon: ExpandMoreIcon,
@@ -50,12 +67,62 @@ function Sidebar({ onSelect }) {
             <TreeItem itemId="usuarios" label="Usuarios" />
             <TreeItem itemId="ingresar" label="Ingresar" />
           </TreeItem>
-          <TreeItem itemId="exchange" label="Exchange" />
+          <TreeItem itemId="herramientas" label="Herramientas">
+            <TreeItem itemId="exchange" label="Convensor de divisas" />
+            <TreeItem itemId="numbers" label="Números" />
+          </TreeItem>
         </SimpleTreeView>
       </Box>
     </Box>
   )
+
+  // Mobile: Mostrar botón de menú y drawer
+  if (isMobile) {
+    return (
+      <>
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: theme.zIndex.drawer + 1,
+          }}
+        >
+          <IconButton
+            onClick={handleDrawerToggle}
+            sx={{
+              backgroundColor: '#fff',
+              border: '1px solid #e5e7eb',
+              '&:hover': { backgroundColor: '#f9fafb' },
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Box>
+
+        <Drawer
+          open={drawerOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: 260,
+            },
+          }}
+        >
+          {sidebarContent}
+        </Drawer>
+
+        {/* Espacio para evitar que el contenido quede detrás del botón */}
+        <Box sx={{ height: 72 }} />
+      </>
+    )
+  }
+
+  // Desktop: Mostrar sidebar normal
+  return sidebarContent
 }
 
 export default Sidebar
-

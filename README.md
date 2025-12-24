@@ -1,74 +1,59 @@
+## Test Rindegastos NestJS – Frontend
+
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend mínimo para consumir el backend NestJS de la prueba técnica. Incluye:
+- Home con acceso rápido a cada ejercicio.
+- Cumpleaños: registrar y listar (días hasta el cumpleaños).
+- Convensor de divisas: conversión puntual con fecha opcional (usa Open Exchange Rates vía backend).
+- Números: producto concatenado y primeros 9 dígitos.
 
-Currently, two official plugins are available:
+### Requisitos
+- Node 20+
+- Backend desplegado (NestJS) con los endpoints:
+  - `GET /exchange/getConvertedAmount?from=CLP&to=USD&amount=15000&date=YYYY-MM-DD` (date opcional)
+  - `POST /birthday` y `GET /birthday`
+  - `GET /numbers/getTheNumber?first=192&second=3`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Configuración local
+1) Instalar deps:
+```
+npm install
+```
+2) Variables de entorno:
+```
+VITE_API_URL=https://prueba-rindegastos-backend.onrender.com
+```
+3) Correr en dev:
+```
+npm run dev
+```
+Vite usa proxy `/api` en desarrollo (ver `vite.config.ts`), por lo que las llamadas se hacen a `/api/...` sin CORS.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+4) Build:
+```
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Estructura relevante
+- `src/pages/home/Home.jsx` – landing.
+- `src/pages/birthday/BirthdayUser.jsx` – registrar cumpleaños.
+- `src/pages/birthday/BirthdayList.jsx` – lista de cumpleaños.
+- `src/pages/exchange/Exchange.jsx` – converson con fecha opcional.
+- `src/pages/numbers/Numbers.jsx` – producto concatenado (primeros 9 dígitos).
+- `src/api/*.jsx` – clientes de API (usan `VITE_API_URL` o `/api` en dev).
+- `src/components/Sidebar.jsx` – navegación.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Despliegue en Render (Static Site)
+1) Conectar repo y crear Static Site.
+2) Build command: `npm install && npm run build`
+3) Publish directory: `dist`
+4) Environment: `VITE_API_URL` apuntando al backend en Render.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# prueba-rindegastos-Frontend
+### Consideraciones de backend (resumen de la prueba)
+- Usar NestJS con endpoints anteriores.
+- Tasa de cambio: Open Exchange Rates.
+- Validar inputs y fechas (no futuras).
+- Persistir cumpleaños en PostgreSQL (Render) para la lista.
+- Seguridad: secrets en variables de entorno, rate-limit/throttle, validación DTO.
+- Rendimiento: evitar múltiples llamadas costosas; usar caché/batch si aplica.

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { getTheNumber } from '../../api/Numbers'
 import { Functions, Calculate, Numbers as NumbersIcon } from '@mui/icons-material'
 
@@ -6,10 +6,10 @@ export default function Numbers() {
     const [first, setFirst] = useState('192')
     const [second, setSecond] = useState('3')
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
-    const [result, setResult] = useState(null)
+    const [error, setError] = useState<string | null>(null)
+    const [result, setResult] = useState<any>(null)
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         setError(null)
         setResult(null)
@@ -56,7 +56,6 @@ export default function Numbers() {
 
     return (
         <div className="mx-auto p-3 md:p-6">
-            {/* Header */}
             <div className="mb-6">
                 <div className="flex items-center gap-2 mb-3">
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
@@ -69,12 +68,10 @@ export default function Numbers() {
                 </p>
             </div>
 
-            {/* Contenido principal */}
             <div className="grid lg:grid-cols-2 gap-4 mb-6">
-                {/* Formulario */}
                 <div className="bg-white rounded-lg border border-gray-100 p-4">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Primer número
@@ -138,7 +135,6 @@ export default function Numbers() {
                     </form>
                 </div>
 
-                {/* Resultados */}
                 <div className="bg-white rounded-lg border border-gray-100 p-4">
                     <h2 className="text-lg font-semibold text-gray-900 mb-3">Resultado</h2>
 
@@ -151,7 +147,6 @@ export default function Numbers() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {/* Primeros 9 dígitos */}
                             <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded p-3 border border-blue-200">
                                 <div className="flex items-center justify-between mb-2">
                                     <p className="text-xs font-medium text-blue-800">PRIMEROS 9 DÍGITOS</p>
@@ -166,7 +161,6 @@ export default function Numbers() {
                                 </div>
                             </div>
 
-                            {/* Resultado completo */}
                             <div className="bg-gray-50 rounded p-3 border border-gray-100">
                                 <p className="text-xs font-medium text-gray-500 mb-2">
                                     RESULTADO COMPLETO ({fullLength} dígitos)
@@ -178,7 +172,6 @@ export default function Numbers() {
                                 </div>
                             </div>
 
-                            {/* Operación realizada */}
                             <div className="grid grid-cols-2 gap-2">
                                 <div className="bg-gray-50 rounded p-2 border border-gray-100">
                                     <p className="text-xs text-gray-500">Operación</p>
@@ -201,3 +194,4 @@ export default function Numbers() {
         </div>
     )
 }
+

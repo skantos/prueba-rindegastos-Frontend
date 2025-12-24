@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { getConvertedAmount } from '../../api/Exchange'
+import type { ExchangeResult } from '../../types'
 import { CurrencyExchange, TrendingUp, Event } from '@mui/icons-material'
 
 const CURRENCY_OPTIONS = [
@@ -18,16 +19,15 @@ export default function Exchange() {
   const [to, setTo] = useState('USD')
   const [amount, setAmount] = useState('15000')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [result, setResult] = useState(null)
+  const [error, setError] = useState<string | null>(null)
+  const [result, setResult] = useState<ExchangeResult | null>(null)
   const [date, setDate] = useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     setResult(null)
 
-    // Validaciones front
     if (!from || !to || Number(amount) <= 0) {
       setError('Ingresa monedas válidas y un monto > 0')
       return
@@ -54,13 +54,14 @@ export default function Exchange() {
       const response = await getConvertedAmount({ from, to, amount, date })
       setResult(response)
     } catch (err) {
-      setError(err.message || 'Error en la conexión')
+      const message = err instanceof Error ? err.message : 'Error en la conexión'
+      setError(message)
     } finally {
       setLoading(false)
     }
   }
 
-  const formatAmount = (value) => {
+  const formatAmount = (value: string | number) => {
     return Number(value).toLocaleString('es-ES', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6
@@ -69,7 +70,6 @@ export default function Exchange() {
 
   return (
     <div className="mx-auto p-3 md:p-6">
-      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
@@ -79,12 +79,10 @@ export default function Exchange() {
         </div>
       </div>
 
-      {/* Formulario y Resultado */}
       <div className="grid lg:grid-cols-2 gap-4 mb-6">
-        {/* Formulario */}
         <div className="bg-white rounded-lg border border-gray-100 p-4">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">De</label>
                 <select
@@ -189,7 +187,6 @@ export default function Exchange() {
           </form>
         </div>
 
-        {/* Resultados */}
         <div className="bg-white rounded-lg border border-gray-100 p-4">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Resultado</h2>
 
@@ -219,7 +216,7 @@ export default function Exchange() {
                 <div className="bg-gray-50 rounded p-2 border border-gray-100">
                   <p className="text-xs text-gray-500">Tasa</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    {parseFloat(result.rate).toFixed(6)}
+                    {Number(result.rate).toFixed(6)}
                   </p>
                 </div>
 
@@ -238,3 +235,4 @@ export default function Exchange() {
     </div>
   )
 }
+

@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL
 
 export async function getConvertedAmount({ from, to, amount, date }) {
-  const baseUrl = import.meta.env.DEV ? '/api' : API_URL
+  const baseUrl = API_URL || (import.meta.env.DEV ? '/api' : '')
   if (!baseUrl) throw new Error('VITE_API_URL no está configurada')
 
   if (!from || !to || Number(amount) <= 0) {

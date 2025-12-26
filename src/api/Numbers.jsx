@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL
 
 export async function getTheNumber({ first, second }) {
-  const baseUrl = import.meta.env.DEV ? '/api' : API_URL
+  const baseUrl = API_URL || (import.meta.env.DEV ? '/api' : '')
   if (!baseUrl) throw new Error('VITE_API_URL no está configurada')
 
   const params = new URLSearchParams({
@@ -13,4 +13,8 @@ export async function getTheNumber({ first, second }) {
   if (!res.ok) throw new Error(`Error HTTP ${res.status}`)
   return res.json()
 }
+
+
+
+
 

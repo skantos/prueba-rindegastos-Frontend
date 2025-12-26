@@ -32,3 +32,7 @@ declare module '../../api/Numbers' {
   export function getTheNumber(params: { first: string | number; second: string | number }): Promise<any>
 }
 
+
+
+
+

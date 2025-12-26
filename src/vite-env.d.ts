@@ -7,3 +7,7 @@ declare module '*.jsx' {
   export const getConvertedAmount: any;
 }
 
+
+
+
+
